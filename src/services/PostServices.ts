@@ -5,7 +5,7 @@ import {IPost} from "../models/IPost";
 export const postAPI = createApi({
     reducerPath: 'postAPI',
     baseQuery: fetchBaseQuery({
-        baseUrl: 'https://jsonplaceholder.typicode.com'
+        baseUrl: 'http://localhost:5000'
     }),
     tagTypes: ['Posts'],
     endpoints: (builder) => ({
@@ -17,7 +17,8 @@ export const postAPI = createApi({
                         _limit: limit
                     }
                 }
-            }
+            },
+            providesTags: result => [{ type: 'Posts', id: 'LIST' }]
         }),
         getAllPosts: builder.query<IPost[], void>({
             query() {
@@ -39,7 +40,46 @@ export const postAPI = createApi({
             transformResponse: (results: { data: { posts: IPost[] } }) =>
                 results.data.posts,
         }),
+        createPost: builder.mutation<IPost, IPost>({
+            query(post) {
+                return {
+                    url: '/posts',
+                    method: 'POST',
+                    credentials: 'include',
+                    body: post,
+                };
+            },
+            invalidatesTags: [{ type: 'Posts', id: 'LIST' }],
+        }),
+        updatePost: builder.mutation<IPost, IPost>({
+            query(post) {
+                return {
+                    url: `/posts/${post.id}`,
+                    method: 'PUT',
+                    credentials: 'include',
+                    body: post,
+                };
+            },
+            invalidatesTags: [{ type: 'Posts', id: 'LIST' }],
+        }),
+        deletePost: builder.mutation<IPost, IPost>({
+            query(post) {
+                return {
+                    url: `/posts/${post.id}`,
+                    method: 'Delete',
+                    credentials: 'include',
+                };
+            },
+            invalidatesTags: [{ type: 'Posts', id: 'LIST' }],
+        }),
+
     })
 });
 
-export const {useFetchAllPostsQuery, useGetAllPostsQuery} = postAPI;
+export const {
+    useFetchAllPostsQuery,
+    useGetAllPostsQuery,
+    useCreatePostMutation,
+    useUpdatePostMutation,
+    useDeletePostMutation,
+} = postAPI;
