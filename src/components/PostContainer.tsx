@@ -1,6 +1,5 @@
-import React, {useEffect, useRef} from 'react';
+import React from 'react';
 import {
-    postAPI,
     useCreatePostMutation,
     useDeletePostMutation,
     useFetchAllPostsQuery,
@@ -10,9 +9,7 @@ import PostItem from "./PostItem";
 import {IPost} from "../models/IPost";
 
 const PostContainer = () => {
-    const {data: posts, error, isLoading} = useFetchAllPostsQuery(100, {
-        //pollingInterval: 1000
-    });
+    const {data: posts, error, isLoading} = useFetchAllPostsQuery(100);
 
     const [createPost, {error: createError, isLoading: isCreateLoading}] = useCreatePostMutation();
     const [updatePost, {error: updateError, isLoading: isUpdateLoading}] = useUpdatePostMutation();

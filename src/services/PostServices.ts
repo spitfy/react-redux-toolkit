@@ -20,26 +20,6 @@ export const postAPI = createApi({
             },
             providesTags: result => [{ type: 'Posts', id: 'LIST' }]
         }),
-        getAllPosts: builder.query<IPost[], void>({
-            query() {
-                return {
-                    url: `/posts`,
-                    credentials: 'include',
-                };
-            },
-            providesTags: (result) =>
-                result
-                    ? [
-                        ...result.map(({ id }) => ({
-                            type: 'Posts' as const,
-                            id,
-                        })),
-                        { type: 'Posts', id: 'LIST' },
-                    ]
-                    : [{ type: 'Posts', id: 'LIST' }],
-            transformResponse: (results: { data: { posts: IPost[] } }) =>
-                results.data.posts,
-        }),
         createPost: builder.mutation<IPost, IPost>({
             query(post) {
                 return {
@@ -78,7 +58,6 @@ export const postAPI = createApi({
 
 export const {
     useFetchAllPostsQuery,
-    useGetAllPostsQuery,
     useCreatePostMutation,
     useUpdatePostMutation,
     useDeletePostMutation,
